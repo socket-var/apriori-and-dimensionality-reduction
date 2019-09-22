@@ -17,8 +17,13 @@ for fileline in filecontent:
 		line[i] = "G"+str(i+1)+"_"+line[i]
 	Data.append(line)
 
-for i in Data[0]:
-	Items.append(i)
+for i in range(0,len(Data[0])):
+	if(Data[i] == "G"+str(i)+_+"UP")
+		Items.append(Data[i])
+		Items.append("G"+str(i+1)+"_"+"DOWN")
+	else:
+		Items.append("G"+str(i+1)+"_"+"UP")
+		Items.append(Data[i])
 
 for line in Data:
 	if(line[-1] not in Items):
@@ -27,6 +32,7 @@ for line in Data:
 # Contains all the unique items from all transactions
 print(Items)
 print("Length of Unique items:"+str(len(Items)))
+
 
 subsets = []
 for i in range(1,len(Items)):
