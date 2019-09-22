@@ -1,7 +1,5 @@
 import re
 import sys
-import itertools
-from tqdm import tqdm
 
 # Reading data from given text file
 file = open("associationruletestdata.txt","r")
@@ -17,13 +15,15 @@ for fileline in filecontent:
 		line[i] = "G"+str(i+1)+"_"+line[i]
 	Data.append(line)
 
-for i in range(0,len(Data[0])):
-	if(Data[i] == "G"+str(i)+_+"UP")
-		Items.append(Data[i])
-		Items.append("G"+str(i+1)+"_"+"DOWN")
-	else:
-		Items.append("G"+str(i+1)+"_"+"UP")
-		Items.append(Data[i])
+for i in range(0,len(Data[0])-1):
+	#print(Data[0][i],"G"+str(i+1)+"_"+"Up")
+	if(Data[0][i] == "G"+str(i+1)+"_"+"Up"):
+		print(Data[0][i],"G"+str(i+1)+"_"+"Up")
+		Items.append(Data[0][i])
+		Items.append("G"+str(i+1)+"_"+"Down")
+	elif(Data[0][i] == "G"+str(i+1)+"_"+"Down"):
+		Items.append("G"+str(i+1)+"_"+"Up")
+		Items.append(Data[0][i])
 
 for line in Data:
 	if(line[-1] not in Items):
@@ -33,7 +33,7 @@ for line in Data:
 print(Items)
 print("Length of Unique items:"+str(len(Items)))
 
-
+'''
 subsets = []
 for i in range(1,len(Items)):
 	subsets = list(itertools.combinations(Items,i))
@@ -41,3 +41,4 @@ for i in range(1,len(Items)):
 		for item in subsets:
 			file.write("{}\n".format(list(item)))
 	print("Done with subsets of length "+str(i))
+'''
