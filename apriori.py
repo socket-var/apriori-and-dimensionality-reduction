@@ -1,6 +1,7 @@
 import re
 import sys
 
+# Prune one element subset 
 def getPrunedData(Items,Data,minSup):
 	pruned = []
 	for i in Items:
@@ -15,6 +16,7 @@ def getPrunedData(Items,Data,minSup):
 			pruned.append(i)
 	return(pruned)
 
+# Checks support for any given item
 def checkSupport(subItem,Data,minSup):
 	count = 0
 	for superset in Data:
@@ -27,22 +29,47 @@ def checkSupport(subItem,Data,minSup):
 		return(True)
 	else:
 		return(False)
+
 # Generate Two item subsets
 def generateTwoItemSubset(Items,minSup):
 	twoItem = []
 	for i in range(len(Items)):
 		for j in range(i+1,len(Items)):
-			if(Items[i][:3]!=Items[j][:3]):
-				subset = [Items[i],Items[j]]
-				if(checkSupport(subset,Data,minSup)):
-					twoItem.append([Items[i],Items[j]])
+			subset = [Items[i],Items[j]]
+			if(checkSupport(subset,Data,minSup)):
+				twoItem.append([Items[i],Items[j]])
 	return(twoItem)
+
+# Generates subsets of any length
+def generateSubsets(Items,Data,minSup):
+	newItems=[]
+	newItem = []
+	for i in range(0,len(Items)):
+		for j in range(i+1,len(Items)):
+			if(checkItems(Items[i],Items[j])):
+				newItem.extend(Items[i])
+				newItem.append(Items[j][-1])
+				#print(newItem)
+				if(checkSupport(newItem,Data,minSup)):
+					newItems.append(newItem)
+				newItem = []
+			else:
+				break
+	return newItems
+
+# Checks the prefix
+def checkItems(firstItem,secondItem):
+	for i in range(0,len(firstItem)-1):
+		if(firstItem[i]!=secondItem[i]):
+			return False
+	return True
 
 # Reading data from given text file
 file = open("associationruletestdata.txt","r")
 filecontent = file.readlines();
 Data = []
 Items = []
+Frequent = []
 min = sys.maxsize
 minSup = float(sys.argv[1])
 for fileline in filecontent:
@@ -54,9 +81,7 @@ for fileline in filecontent:
 	Data.append(line)
 
 for i in range(0,len(Data[0])-1):
-	#print(Data[0][i],"G"+str(i+1)+"_"+"Up")
 	if(Data[0][i] == "G"+str(i+1)+"_"+"Up"):
-		# print(Data[0][i],"G"+str(i+1)+"_"+"Up")
 		Items.append(Data[0][i])
 		Items.append("G"+str(i+1)+"_"+"Down")
 	elif(Data[0][i] == "G"+str(i+1)+"_"+"Down"):
@@ -72,22 +97,26 @@ for line in Data:
 # print("Length of Unique items:"+str(len(Items)))
 
 Items = getPrunedData(Items,Data,minSup)
+
+Frequent.extend(Items)
 # print(Items)
-# print(len(Items))
+print(1,len(Items))
 
 twoItem = generateTwoItemSubset(Items,minSup)
+Frequent.extend(twoItem)
 # print(twoItem)
-print(len(twoItem))
+print(2,len(twoItem))
+# print(len(Frequent))
 
-
-
-
-'''
-subsets = []
-for i in range(1,len(Items)):
-	subsets = list(itertools.combinations(Items,i))
-	with open('subsets.txt','a') as file:
-		for item in subsets:
-			file.write("{}\n".format(list(item)))
-	print("Done with subsets of length "+str(i))
-'''
+# Generate all other subsets from two item subsets
+Items = twoItem
+subSetLen = 3
+while(True):
+	Items = generateSubsets(Items,Data,minSup)
+	if(len(Items) == 0):
+		break
+	print(subSetLen,len(Items))
+	subSetLen+=1
+	Frequent.extend(Items)
+print("Length of frequent Itemsets")
+print(len(Frequent))
