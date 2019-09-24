@@ -51,57 +51,72 @@ PCA performs dimensionality reduction by performing a linear mapping of the data
 
 #### <u>PCA</u>:
 
-![](./PCA/results/pca_pca_a.png)
+<img src="./Code/results/pca_pca_a.png" width="50%" height="50%" />
 
 #### <u>SVD</u>:
 
-![](./PCA/results/svd_pca_a.png)
+<img src="./Code/results/svd_pca_a.png" width="50%" height="50%" />
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 #### <u>t-SNE</u>:
 
-![](./PCA/results/tsne_pca_a.png)
+<img src="./Code/results/tsne_pca_a.png" width="50%" height="50%" />
+
 
 ### **Dataset: pca_b.txt**
 
 #### <u>PCA</u>:
 
-![](./PCA/results/pca_pca_b.png)
+<img src="./Code/results/pca_pca_b.png" width="50%" height="50%" />
 
 #### <u>SVD</u>:
 
-![](./PCA/results/svd_pca_b.png)
+<img src="./Code/results/svd_pca_b.png" width="50%" height="50%" />
+
+<br>
+<br>
 
 #### <u>t-SNE</u>:
 
-![](./PCA/results/tsne_pca_b.png)
+<img src="./Code/results/tsne_pca_b.png" width="50%" height="50%" />
 
 ### **Dataset: pca_c.txt**
 
 #### <u>PCA</u>:
 
-![](./PCA/results/pca_pca_c.png)
+<img src="./Code/results/pca_pca_c.png" width="50%" height="50%" />
 
 #### <u>SVD:</u>
 
-![](./PCA/results/svd_pca_c.png)
+<img src="./Code/results/svd_pca_c.png" width="50%" height="50%" />
+
+<br>
+<br>
 
 #### <u>t-SNE:</u>
 
-![](./PCA/results/tsne_pca_c.png)
+<img src="./Code/results/tsne_pca_c.png" width="50%" height="50%" />
 
 ## Observations:
 
 - Unlike PCA, SVD doesn't need the features to be adjusted by subtracting the mean, if we do so the results of SVD and PCA will be identical. Below we compare mean-adjusted SVD vs plain SVD for `pca_a.txt`:
 
-### PCA:
+  **PCA**:
 
-![](./PCA/results/pca_pca_a.png)
+  <img src="./Code/results/pca_pca_a.png" width="35%" height="35%" />
 
-### SVD mean-adjusted vs plain SVD:
+  **SVD mean-adjusted vs plain SVD:**
 
-![](./PCA/results/svd_mean_a.png)
+  <img src="./Code/results/svd_mean_a.png" width="35%" height="35%" />
 
-![](./PCA/results/svd_pca_a.png)
+  <img src="./Code/results/svd_pca_a.png" width="35%" height="35%" />
 
 - While PCA and SVD use eigen vectors, t-SNE is based on probabilistic models and outputs distinguishable clusters as it is trained more.
 - While PCA uses orthogonal transformations, t-SNE relies on calculating nearest neighbours.
