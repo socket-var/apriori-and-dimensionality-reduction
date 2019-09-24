@@ -1,5 +1,6 @@
 import re
 import sys
+import collections
 
 # Prune one element subset 
 def getPrunedData(Items,Data,minSup):
@@ -13,6 +14,7 @@ def getPrunedData(Items,Data,minSup):
 		sup = float(count)/len(Data)
 		# print(sup)
 		if(sup>=minSup):
+			Frequency[i] = count
 			pruned.append(i)
 	return(pruned)
 
@@ -26,6 +28,8 @@ def checkSupport(subItem,Data,minSup):
 
 	sup = float(count)/len(Data)
 	if(sup>=minSup):
+		key = "-".join(subItem)
+		Frequency[key] = count
 		return(True)
 	else:
 		return(False)
@@ -64,17 +68,59 @@ def checkItems(firstItem,secondItem):
 			return False
 	return True
 
+###################################################
+
+# Generate level one association rules for given frequent item
+def generateLevelOneRules(FreqItem,left,right):
+	print(FreqItem)
+	for i in range(0,len(FreqItem)):
+		templeft = []
+		tempright = []
+		for j in range(0,len(FreqItem)):
+			if(i==j):
+				tempright.append(FreqItem[i])
+			else:
+				templeft.append(FreqItem[j])
+		#print(templeft,tempright)
+		if(checkConfidence(templeft,FreqItem)):
+			left.append(templeft)
+			right.append(tempright)
+	return(left,right)
+
+def generateOtherLevels(left,right):
+	newLeft = []
+	newRight = []
+	return(newLeft,newRight)
+
+# Check confidence
+def checkConfidence(templeft,FreqItem):
+	keyFreqItem = "-".join(FreqItem)
+	if(len(templeft) == 1):
+		keyLeft = templeft[0]
+	else:
+		keyLeft = "-".join(templeft)
+		#print(keyFreqItem,keyLeft)
+	conf = float(Frequency[keyFreqItem])/Frequency[keyLeft]
+
+	if(conf>=minConf):
+		return True
+	else:
+		return False
+
+### Part 1 ###
 # Reading data from given text file
 file = open("associationruletestdata.txt","r")
 filecontent = file.readlines();
 Data = []
 Items = []
 Frequent = []
+Frequency = collections.OrderedDict()
 min = sys.maxsize
 minSup = float(sys.argv[1])
+minConf = float(sys.argv[2])
 for fileline in filecontent:
 	line = fileline.split('\t')
-	line[-1] = line[-1][:-2]
+	line[-1] = line[-1][:-1]
 	for i in range(0,len(line)-1):
 		#adding 'Gi_' prefix to all gene sequences
 		line[i] = "G"+str(i+1)+"_"+line[i]
@@ -101,12 +147,12 @@ Items = getPrunedData(Items,Data,minSup)
 Frequent.extend(Items)
 # print(Items)
 print(1,len(Items))
+oneItemLen = len(Items)
 
 twoItem = generateTwoItemSubset(Items,minSup)
 Frequent.extend(twoItem)
 # print(twoItem)
 print(2,len(twoItem))
-# print(len(Frequent))
 
 # Generate all other subsets from two item subsets
 Items = twoItem
@@ -120,3 +166,34 @@ while(True):
 	Frequent.extend(Items)
 print("Length of frequent Itemsets")
 print(len(Frequent))
+print("Length of support dictionary")
+print(len(Frequency))
+#print(Frequency)
+
+### Part 2 ###
+
+Gleft = []
+Gright = []
+
+for i in range(oneItemLen,len(Frequent)):
+	#print(len(Frequent))
+	left = []
+	right = []
+	if(len(Frequent[i])>=2):
+		(newleft,newright) = generateLevelOneRules(Frequent[i],left,right)
+		Gleft.extend(newleft)
+		Gright.extend(newright)
+	if(len(Frequent[i])==2):
+		continue
+	if(len(Frequent[i])==4):
+		break
+	# for j in range(0,len(Frequency[i])-2):
+	# 	(left,right) = generateOtherLevels(left,right)
+
+#Print Utility
+
+for i in range(0,len(Gleft)):
+	print(Gleft[i],Gright[i])
+print(len(Gleft))
+
+
