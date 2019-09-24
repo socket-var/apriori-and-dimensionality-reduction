@@ -3,16 +3,11 @@ from sklearn.manifold import TSNE
 
 
 def pca(X):
-    # subtract mean
     X1 = X - X.mean(axis=0)
 
-    # covariance
     cov_matrix = np.cov(X1.T)
 
-    # obtain eigen values and eigen vectors of covariance matrix
     eig_values, eig_vectors = np.linalg.eig(cov_matrix)
-
-    # select top n eigen values as the principal components
 
     top_eig_indices = eig_values.argsort()[::-1][:2]
     top_eig_vectors = eig_vectors[:, top_eig_indices]
