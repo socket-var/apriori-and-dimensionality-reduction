@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def import_txt(filename):
-    data = pd.read_csv("input/{}.txt".format(filename), sep="\t", header=None)
+    data = pd.read_csv("input/{}".format(filename), sep="\t", header=None)
 
     X = data.iloc[:, :-1]
     y = data.iloc[:, -1]
@@ -29,7 +29,7 @@ def scatter(X1, X2, labels, unique_labels, algo, filename):
 
     plt.legend()
 
-    # plt.show()
+    plt.show()
 
-    plt.savefig("results/{}_{}.png".format(algo, filename))
-    plt.close()
+    # plt.savefig("results/{}_{}.png".format(algo, filename))
+    # plt.close()

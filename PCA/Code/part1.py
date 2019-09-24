@@ -2,7 +2,8 @@ import part1_helpers
 import algos
 
 
-filenames = input("Enter the names of the files without .txt:")
+filenames = input(
+    "Enter the filenames in the input folder:")
 algorithms = input("Enter the list of algorithms:")
 
 files_list = [name.strip() for name in filenames.split(",")]
@@ -13,7 +14,7 @@ data_list = []
 for filename in files_list:
     data = part1_helpers.import_txt(filename)
 
-    data_list.append((data, filename))
+    data_list.append((data, filename.split(".")[0]))
 
 
 for data, filename in data_list:

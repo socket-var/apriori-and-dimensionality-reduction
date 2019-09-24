@@ -28,7 +28,7 @@ def svd(X):
 
 
 def tsne(X):
-    tsne = TSNE(n_components=2, n_iter=1000, init="pca")
+    tsne = TSNE(n_components=2, init="pca", n_iter=700)
     new_X = tsne.fit_transform(X)
 
     return new_X
