@@ -65,12 +65,10 @@ def checkItems(firstItem,secondItem):
 			return False
 	return True
 
-###################################################
+#############################################################
 
 # Generate level one association rules for given frequent item
 def generateLevelOneRules(FreqItem,left,right):
-	#print("level one")
-	#print(FreqItem)
 	for i in range(0,len(FreqItem)):
 		templeft = []
 		tempright = []
@@ -79,7 +77,6 @@ def generateLevelOneRules(FreqItem,left,right):
 				tempright.append(FreqItem[i])
 			else:
 				templeft.append(FreqItem[j])
-		#print(templeft,tempright)
 		if(checkConfidence(templeft,FreqItem)):
 			left.append(templeft)
 			right.append(tempright)
@@ -89,17 +86,12 @@ def generateLevelOneRules(FreqItem,left,right):
 def generateOtherLevels(FreqItem,left,right,level):
 	newleft = []
 	newright = []
-	#print("next level "+str(level))
-	#print(left)
-	#print(right)
 	for i in range(0,len(left)):
 		for j in range(i+1,len(left)):
 			comleft = getCommonLeft(left[i],left[j])
 			comright = getCommonRight(right[i],right[j])
-			#print(comleft,comright)
 			if(len(comleft)>0):
 				if(checkConfidence(comleft,FreqItem)):
-					#print(comleft,comright)
 					if(comleft not in newleft):
 						newleft.append(comleft)
 						newright.append(comright)
@@ -124,12 +116,10 @@ def getCommonRight(right1,right2):
 # Sort left list or right list based on numbers in the string
 def sortList(toSort):
 	d = {}
-	#print("In toSort")
 	temp = []
 	for i in range(0,len(toSort)):
 		if(toSort[i][1].isdigit()):
 			num = re.findall(r'\d+',toSort[i])
-			#print("key: ",num,"string: ",toSort[i])
 			d[int(num[0])] = toSort[i]
 		else:
 			temp.append(toSort[i])
@@ -145,13 +135,69 @@ def checkConfidence(templeft,FreqItem):
 	else:
 		keyLeft = "-".join(templeft)
 	conf = float(Frequency[keyFreqItem])/Frequency[keyLeft]
-	#print(conf)
 	if(conf>=minConf):
+		print(conf)
 		return True
 	else:
 		return False
 
-### Part 1 ###
+def generateRulesForOne(left,right,rule):
+	expression = eval(rule)
+	ruleSign = expression[0]
+	count = expression[1]
+	checklist = set(expression[2])
+	print(ruleSign,count,checklist)
+	RuleList = [] 
+	if(ruleSign == 'HEAD'):
+		for i in range(0,len(left)):
+			trans = set(left[i])
+			if(count=='ANY'):
+				if(len(trans&checklist)>0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			if(count=='NONE'):
+				if(len(trans&checklist)==0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			else:
+				if(len(trans&checklist)==count):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+	elif(ruleSign == 'BODY'):
+		for i in range(len(right)):
+			trans = set(right[i])
+			if(count=='ANY'):
+				if(len(trans&checklist)>0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			if(count=='NONE'):
+				if(len(trans&checklist)==0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			else:
+				if(len(trans&checklist)==count):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+	elif(ruleSign == 'RULE'):
+		for i in range(len(left)):
+			xleft = left[i]
+			xleft.extend(right[i])
+			trans = set(xleft)
+			if(count=='ANY'):
+				if(len(trans&checklist)>0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			if(count=='NONE'):
+				if(len(trans&checklist)==0):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+			else:
+				if(len(trans&checklist)==count):
+					RuleList.append(str(left[i])+"->"+str(right[i]))
+
+	return RuleList
+
+
+# def generateTemplateRules()
+
+# def generateRulesForOne(left,right,rule):
+
+# def generateRulesForOne(left,right,rule):
+
+
+###################### Part 1 ############################
 
 # Reading data from given text file
 file = open("associationruletestdata.txt","r")
@@ -163,6 +209,7 @@ Frequency = collections.OrderedDict()
 min = sys.maxsize
 minSup = float(sys.argv[1])
 minConf = float(sys.argv[2])
+rule = sys.argv[3]
 for fileline in filecontent:
 	line = fileline.split('\t')
 	line[-1] = line[-1][:-1]
@@ -217,7 +264,6 @@ print(len(Frequency))
 Gleft = []
 Gright = []
 
-
 for i in range(oneItemLen,len(Frequent)):
 	left = []
 	right = []
@@ -235,15 +281,33 @@ for i in range(oneItemLen,len(Frequent)):
 		Gleft.extend(newleft)
 		Gright.extend(newright)
 	
-
-
 #Print Utility
 
 #for i in range(0,len(Gleft)):
 # 	print(Gleft[i],Gright[i])
 print("Length of rules generated")
 print(len(Gleft))
+print(len(Gright))
 
+# temp_count = 0
+# for i in range(0,len(Gleft)):
+# 	trans = Gleft[i]
+# 	print(trans)
+# 	if('G80_Down' in trans):
+# 		temp_count+=1
+
+
+
+if(rule[0:19]=='asso_rule.template1'):
+	output = generateRulesForOne(Gleft,Gright,rule[19:])
+elif(rule[0:19]=='asso_rule.template2'):
+	output = generateRulesForTwo(Gleft,Gright,rule[19:])
+elif(rule[0:19]=='asso_rule.template3'):
+	output = generateRulesForThree(Gleft,Gright,rule[19:])
+
+print(output)
+print(len(output))
+# print("Count",temp_count)
 # frequentItem = ['G8_Up', 'G24_Down', 'G54_Up', 'G80_Down', 'G81_Up', 'Breast Cancer']
 # left = []
 # right = []
