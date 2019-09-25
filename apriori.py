@@ -151,50 +151,64 @@ def generateRulesForOne(left,right,rule):
 	if(ruleSign == 'HEAD'):
 		for i in range(0,len(left)):
 			trans = set(left[i])
-			if(count=='ANY'):
-				if(len(trans&checklist)>0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			if(count=='NONE'):
-				if(len(trans&checklist)==0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			else:
-				if(len(trans&checklist)==count):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
+			generateTemplateRules(RuleList,trans,count,checklist,left[i],right[i])
+
 	elif(ruleSign == 'BODY'):
 		for i in range(len(right)):
 			trans = set(right[i])
-			if(count=='ANY'):
-				if(len(trans&checklist)>0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			if(count=='NONE'):
-				if(len(trans&checklist)==0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			else:
-				if(len(trans&checklist)==count):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
+			generateTemplateRules(RuleList,trans,count,checklist,left[i],right[i])
+			
 	elif(ruleSign == 'RULE'):
 		for i in range(len(left)):
-			xleft = left[i]
+			xleft = []
+			xleft.extend(left[i])
 			xleft.extend(right[i])
 			trans = set(xleft)
-			if(count=='ANY'):
-				if(len(trans&checklist)>0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			if(count=='NONE'):
-				if(len(trans&checklist)==0):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
-			else:
-				if(len(trans&checklist)==count):
-					RuleList.append(str(left[i])+"->"+str(right[i]))
+			generateTemplateRules(RuleList,trans,count,checklist,left[i],right[i])
 
 	return RuleList
 
 
-# def generateTemplateRules()
+def generateTemplateRules(RuleList,trans,count,checklist,left,right):
+	if(count=='ANY'):
+		if(len(trans&checklist)>0):
+			RuleList.append(str(left)+"->"+str(right))
+	elif(count=='NONE'):
+		if(len(trans&checklist)==0):
+			RuleList.append(str(left)+"->"+str(right))
+	else:
+		if(len(trans&checklist)==int(count)):
+			RuleList.append(str(left)+"->"+str(right))
 
-# def generateRulesForOne(left,right,rule):
+	return(RuleList)
 
-# def generateRulesForOne(left,right,rule):
+def generateRulesForTwo(left,right,rule):
+	expression = eval(rule)
+	ruleSign = expression[0]
+	count = expression[1]
+	RuleList = []
+	if(ruleSign == 'HEAD'):
+		for i in range(0,len(left)):
+			if(len(left[i])==int(count)):
+				RuleList.append(str(left[i])+"->"+str(right[i]))
+	
+	elif(ruleSign == 'BODY'):
+		for i in range(len(right)):
+			if(len(right[i])==int(count)):
+				RuleList.append(str(left[i])+"->"+str(right[i]))
+					
+	elif(ruleSign == 'RULE'):
+		for i in range(len(left)):
+			xleft = []
+			xleft.extend(left[i])
+			xleft.extend(right[i])
+			if(len(xleft)==int(count)):
+				RuleList.append(str(left[i])+"->"+str(right[i]))
+	return RuleList
+
+def generateRulesForThree(left,right,rule):
+	expression = eval(rule)
+	
 
 
 ###################### Part 1 ############################
