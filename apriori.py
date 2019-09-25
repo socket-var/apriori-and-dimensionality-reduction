@@ -191,12 +191,12 @@ def generateRulesForTwo(left,right,rule):
 	RuleList = []
 	if(ruleSign == 'HEAD'):
 		for i in range(0,len(left)):
-			if(len(left[i])==int(count)):
+			if(len(left[i])>=int(count)):
 				RuleList.append(str(left[i])+"->"+str(right[i]))
 	
 	elif(ruleSign == 'BODY'):
 		for i in range(len(right)):
-			if(len(right[i])==int(count)):
+			if(len(right[i])>=int(count)):
 				RuleList.append(str(left[i])+"->"+str(right[i]))
 					
 	elif(ruleSign == 'RULE'):
@@ -204,7 +204,7 @@ def generateRulesForTwo(left,right,rule):
 			xleft = []
 			xleft.extend(left[i])
 			xleft.extend(right[i])
-			if(len(xleft)==int(count)):
+			if(len(xleft)>=int(count)):
 				RuleList.append(str(left[i])+"->"+str(right[i]))
 	return RuleList
 
@@ -335,6 +335,8 @@ for i in range(oneItemLen,len(Frequent)):
 		Gright.extend(newright)
 	
 print("Length of total rules generated: "+str(len(Gleft)))
+for i in range(0,len(Gleft)):
+	print(Gleft[i],Gright[i])
 # print(len(Gleft))
 # print(len(Gright))
 
