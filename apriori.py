@@ -10,9 +10,7 @@ def getPrunedData(Items,Data,minSup):
 		for entry in Data:
 			if(i in entry):
 				count+=1
-		# print(count)
 		sup = float(count)/len(Data)
-		# print(sup)
 		if(sup>=minSup):
 			Frequency[i] = count
 			pruned.append(i)
@@ -53,7 +51,6 @@ def generateSubsets(Items,Data,minSup):
 			if(checkItems(Items[i],Items[j])):
 				newItem.extend(Items[i])
 				newItem.append(Items[j][-1])
-				#print(newItem)
 				if(checkSupport(newItem,Data,minSup)):
 					newItems.append(newItem)
 				newItem = []
@@ -72,7 +69,8 @@ def checkItems(firstItem,secondItem):
 
 # Generate level one association rules for given frequent item
 def generateLevelOneRules(FreqItem,left,right):
-	print(FreqItem)
+	#print("level one")
+	#print(FreqItem)
 	for i in range(0,len(FreqItem)):
 		templeft = []
 		tempright = []
@@ -87,10 +85,57 @@ def generateLevelOneRules(FreqItem,left,right):
 			right.append(tempright)
 	return(left,right)
 
-def generateOtherLevels(left,right):
-	newLeft = []
-	newRight = []
-	return(newLeft,newRight)
+# Generate all the levels other than the first level
+def generateOtherLevels(FreqItem,left,right,level):
+	newleft = []
+	newright = []
+	#print("next level "+str(level))
+	#print(left)
+	#print(right)
+	for i in range(0,len(left)):
+		for j in range(i+1,len(left)):
+			comleft = getCommonLeft(left[i],left[j])
+			comright = getCommonRight(right[i],right[j])
+			#print(comleft,comright)
+			if(len(comleft)>0):
+				if(checkConfidence(comleft,FreqItem)):
+					#print(comleft,comright)
+					if(comleft not in newleft):
+						newleft.append(comleft)
+						newright.append(comright)
+	return(newleft,newright)
+
+# Gets the intersection of elements for left
+def getCommonLeft(left1,left2):
+	cleft = []
+	l1 = set(left1)
+	l2 = set(left2)
+	cleft = sortList(list(l1&l2))
+	return cleft
+
+# Gets the Union of elements for right
+def getCommonRight(right1,right2):
+	cright = [] 
+	r1 = set(right1)
+	r2 = set(right2)
+	cright = sortList(list(r1.union(r2)))
+	return cright
+
+# Sort left list or right list based on numbers in the string
+def sortList(toSort):
+	d = {}
+	#print("In toSort")
+	temp = []
+	for i in range(0,len(toSort)):
+		if(toSort[i][1].isdigit()):
+			num = re.findall(r'\d+',toSort[i])
+			#print("key: ",num,"string: ",toSort[i])
+			d[int(num[0])] = toSort[i]
+		else:
+			temp.append(toSort[i])
+	ans = [val[1] for val in sorted(d.items(),key = lambda x:x[0])]
+	ans.extend(temp)
+	return ans
 
 # Check confidence
 def checkConfidence(templeft,FreqItem):
@@ -99,15 +144,15 @@ def checkConfidence(templeft,FreqItem):
 		keyLeft = templeft[0]
 	else:
 		keyLeft = "-".join(templeft)
-		#print(keyFreqItem,keyLeft)
 	conf = float(Frequency[keyFreqItem])/Frequency[keyLeft]
-
+	#print(conf)
 	if(conf>=minConf):
 		return True
 	else:
 		return False
 
 ### Part 1 ###
+
 # Reading data from given text file
 file = open("associationruletestdata.txt","r")
 filecontent = file.readlines();
@@ -145,13 +190,11 @@ for line in Data:
 Items = getPrunedData(Items,Data,minSup)
 
 Frequent.extend(Items)
-# print(Items)
 print(1,len(Items))
 oneItemLen = len(Items)
 
 twoItem = generateTwoItemSubset(Items,minSup)
 Frequent.extend(twoItem)
-# print(twoItem)
 print(2,len(twoItem))
 
 # Generate all other subsets from two item subsets
@@ -168,32 +211,55 @@ print("Length of frequent Itemsets")
 print(len(Frequent))
 print("Length of support dictionary")
 print(len(Frequency))
-#print(Frequency)
 
 ### Part 2 ###
 
 Gleft = []
 Gright = []
 
+
 for i in range(oneItemLen,len(Frequent)):
-	#print(len(Frequent))
 	left = []
 	right = []
+	# if(len(Frequent[i])==6):
+	# 	print(Frequent[i])
+	# 	continue
 	if(len(Frequent[i])>=2):
 		(newleft,newright) = generateLevelOneRules(Frequent[i],left,right)
 		Gleft.extend(newleft)
 		Gright.extend(newright)
 	if(len(Frequent[i])==2):
 		continue
-	if(len(Frequent[i])==4):
-		break
-	# for j in range(0,len(Frequency[i])-2):
-	# 	(left,right) = generateOtherLevels(left,right)
+	for j in range(0,len(Frequent[i])-2):
+		(newleft,newright) = generateOtherLevels(Frequent[i],newleft,newright,j+2)
+		Gleft.extend(newleft)
+		Gright.extend(newright)
+	
+
 
 #Print Utility
 
-for i in range(0,len(Gleft)):
-	print(Gleft[i],Gright[i])
+#for i in range(0,len(Gleft)):
+# 	print(Gleft[i],Gright[i])
+print("Length of rules generated")
 print(len(Gleft))
+
+# frequentItem = ['G8_Up', 'G24_Down', 'G54_Up', 'G80_Down', 'G81_Up', 'Breast Cancer']
+# left = []
+# right = []
+# (newleft,newright) = generateLevelOneRules(frequentItem,left,right)
+# print(newleft)
+# print(newright)
+# for j in range(0,len(frequentItem)-2):
+# 	if(j+2 == 5):
+# 		break
+# 	(newleft,newright) = generateOtherLevels(frequentItem,newleft,newright,j+2)
+# 	print("Level "+ str(j+2))
+# 	print(newleft)
+# 	print(newright)
+# 	print(len(newleft))
+# 	print(len(newright))
+
+
 
 
