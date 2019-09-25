@@ -136,19 +136,19 @@ def checkConfidence(templeft,FreqItem):
 		keyLeft = "-".join(templeft)
 	conf = float(Frequency[keyFreqItem])/Frequency[keyLeft]
 	if(conf>=minConf):
-		print(conf)
+		#print(conf)
 		return True
 	else:
 		return False
 
 def generateRulesForOne(left,right,rule):
-	print(rule)
+	#print(rule)
 	expression = eval(rule)
-	print(expression)
+	#print(expression)
 	ruleSign = expression[0]
 	count = expression[1]
 	checklist = set(expression[2])
-	print(ruleSign,count,checklist)
+	#print(ruleSign,count,checklist)
 	RuleList = [] 
 	if(ruleSign == 'HEAD'):
 		for i in range(0,len(left)):
@@ -224,31 +224,31 @@ def generateRulesForThree(left,right,rule):
 	if(signs[0]=='1' and signs[1] == '1'):
 		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+','+str(expression[3])+")"
 		rule2 = "("+"'"+expression[4]+"'"+','+"'"+expression[5]+"'"+','+str(expression[6])+")"
-		print(rule1,rule2)
+		#print(rule1,rule2)
 		rulelist1 = set(generateRulesForOne(left,right,rule1))
 		rulelist2 = set(generateRulesForOne(left,right,rule2))
-		print(len(rulelist1),len(rulelist2))
+		#print(len(rulelist1),len(rulelist2))
 	elif(signs[0] == '1' and signs[1] == '2'):
 		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+','+str(expression[3])+")"
 		rule2 = "("+"'"+expression[4]+"'"+','+"'"+expression[5]+"'"+")"
-		print(rule1,rule2)
+		#print(rule1,rule2)
 		rulelist1 = set(generateRulesForOne(left,right,rule1))
 		rulelist2 = set(generateRulesForTwo(left,right,rule2))
-		print(len(rulelist1),len(rulelist2))
+		#print(len(rulelist1),len(rulelist2))
 	elif(signs[0] == '2' and signs[1] == '1'):
 		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+")"
 		rule2 = "("+"'"+expression[3]+"'"+','+"'"+expression[4]+"'"+','+str(expression[5])+")"
-		print(rule1,rule2)
+		#print(rule1,rule2)
 		rulelist1 = set(generateRulesForTwo(left,right,rule1))
 		rulelist2 = set(generateRulesForOne(left,right,rule2))
-		print(len(rulelist1),len(rulelist2))
+		#print(len(rulelist1),len(rulelist2))
 	elif(signs[0] == '2' and signs[1] == '2'):
 		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+")"
 		rule2 = "("+"'"+expression[3]+"'"+','+"'"+expression[4]+"'"+")"
-		print(rule1,rule2)
+		#print(rule1,rule2)
 		rulelist1 = set(generateRulesForTwo(left,right,rule1))
 		rulelist2 = set(generateRulesForTwo(left,right,rule2))
-		print(len(rulelist1),(rulelist2))
+		#print(len(rulelist1),(rulelist2))
 
 	if(operation == 'or'):
 		return rulelist1.union(rulelist2)
@@ -289,19 +289,15 @@ for line in Data:
 	if(line[-1] not in Items):
 		Items.append(line[-1])
 
-# Contains all the unique items from all transactions
-# print(Items)
-# print("Length of Unique items:"+str(len(Items)))
-
 Items = getPrunedData(Items,Data,minSup)
 
 Frequent.extend(Items)
-print(1,len(Items))
+print("number of length-"+str(1)+" frequent itemsets:",len(Items))
 oneItemLen = len(Items)
 
 twoItem = generateTwoItemSubset(Items,minSup)
 Frequent.extend(twoItem)
-print(2,len(twoItem))
+print("number of length-"+str(2)+" frequent itemsets:",len(twoItem))
 
 # Generate all other subsets from two item subsets
 Items = twoItem
@@ -310,9 +306,10 @@ while(True):
 	Items = generateSubsets(Items,Data,minSup)
 	if(len(Items) == 0):
 		break
-	print(subSetLen,len(Items))
+	print("number of length-"+str(subSetLen)+" frequent itemsets:",len(Items))
 	subSetLen+=1
 	Frequent.extend(Items)
+
 print("Length of frequent Itemsets")
 print(len(Frequent))
 print("Length of support dictionary")
@@ -326,9 +323,6 @@ Gright = []
 for i in range(oneItemLen,len(Frequent)):
 	left = []
 	right = []
-	# if(len(Frequent[i])==6):
-	# 	print(Frequent[i])
-	# 	continue
 	if(len(Frequent[i])>=2):
 		(newleft,newright) = generateLevelOneRules(Frequent[i],left,right)
 		Gleft.extend(newleft)
@@ -340,22 +334,9 @@ for i in range(oneItemLen,len(Frequent)):
 		Gleft.extend(newleft)
 		Gright.extend(newright)
 	
-#Print Utility
-
-#for i in range(0,len(Gleft)):
-# 	print(Gleft[i],Gright[i])
-print("Length of rules generated")
-print(len(Gleft))
-print(len(Gright))
-
-# temp_count = 0
-# for i in range(0,len(Gleft)):
-# 	trans = Gleft[i]
-# 	print(trans)
-# 	if('G80_Down' in trans):
-# 		temp_count+=1
-
-
+print("Length of total rules generated: "+str(len(Gleft)))
+# print(len(Gleft))
+# print(len(Gright))
 
 if(rule[0:19]=='asso_rule.template1'):
 	output = generateRulesForOne(Gleft,Gright,rule[19:])
@@ -364,8 +345,8 @@ elif(rule[0:19]=='asso_rule.template2'):
 elif(rule[0:19]=='asso_rule.template3'):
 	output = generateRulesForThree(Gleft,Gright,rule[19:])
 
-print(output)
-print(len(output))
+#print(output)
+print("length of rules generated for given template: "+str(len(output)))
 # print("Count",temp_count)
 # frequentItem = ['G8_Up', 'G24_Down', 'G54_Up', 'G80_Down', 'G81_Up', 'Breast Cancer']
 # left = []
