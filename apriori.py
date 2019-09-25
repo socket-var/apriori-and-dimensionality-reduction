@@ -142,7 +142,9 @@ def checkConfidence(templeft,FreqItem):
 		return False
 
 def generateRulesForOne(left,right,rule):
+	print(rule)
 	expression = eval(rule)
+	print(expression)
 	ruleSign = expression[0]
 	count = expression[1]
 	checklist = set(expression[2])
@@ -207,8 +209,51 @@ def generateRulesForTwo(left,right,rule):
 	return RuleList
 
 def generateRulesForThree(left,right,rule):
+	signs=[]
 	expression = eval(rule)
-	
+	tempSign = expression[0]
+	if(len(tempSign) == 4):
+		signs.append(tempSign[0])
+		signs.append(tempSign[3])
+		operation = tempSign[1:3]
+	else:
+		signs.append(tempSign[0])
+		signs.append(tempSign[4])
+		operation = tempSign[1:4]
+
+	if(signs[0]=='1' and signs[1] == '1'):
+		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+','+str(expression[3])+")"
+		rule2 = "("+"'"+expression[4]+"'"+','+"'"+expression[5]+"'"+','+str(expression[6])+")"
+		print(rule1,rule2)
+		rulelist1 = set(generateRulesForOne(left,right,rule1))
+		rulelist2 = set(generateRulesForOne(left,right,rule2))
+		print(len(rulelist1),len(rulelist2))
+	elif(signs[0] == '1' and signs[1] == '2'):
+		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+','+str(expression[3])+")"
+		rule2 = "("+"'"+expression[4]+"'"+','+"'"+expression[5]+"'"+")"
+		print(rule1,rule2)
+		rulelist1 = set(generateRulesForOne(left,right,rule1))
+		rulelist2 = set(generateRulesForTwo(left,right,rule2))
+		print(len(rulelist1),len(rulelist2))
+	elif(signs[0] == '2' and signs[1] == '1'):
+		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+")"
+		rule2 = "("+"'"+expression[3]+"'"+','+"'"+expression[4]+"'"+','+str(expression[5])+")"
+		print(rule1,rule2)
+		rulelist1 = set(generateRulesForTwo(left,right,rule1))
+		rulelist2 = set(generateRulesForOne(left,right,rule2))
+		print(len(rulelist1),len(rulelist2))
+	elif(signs[0] == '2' and signs[1] == '2'):
+		rule1 = "("+"'"+expression[1]+"'"+','+"'"+expression[2]+"'"+")"
+		rule2 = "("+"'"+expression[3]+"'"+','+"'"+expression[4]+"'"+")"
+		print(rule1,rule2)
+		rulelist1 = set(generateRulesForTwo(left,right,rule1))
+		rulelist2 = set(generateRulesForTwo(left,right,rule2))
+		print(len(rulelist1),(rulelist2))
+
+	if(operation == 'or'):
+		return rulelist1.union(rulelist2)
+	else:
+		return rulelist1&rulelist2
 
 
 ###################### Part 1 ############################
