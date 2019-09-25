@@ -136,7 +136,7 @@ def checkConfidence(templeft,FreqItem):
 		keyLeft = "-".join(templeft)
 	conf = float(Frequency[keyFreqItem])/Frequency[keyLeft]
 	if(conf>=minConf):
-		#print(conf)
+		print(conf)
 		return True
 	else:
 		return False
