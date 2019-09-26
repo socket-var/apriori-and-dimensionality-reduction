@@ -120,3 +120,20 @@ PCA performs dimensionality reduction by performing a linear mapping of the data
 
 - While PCA and SVD use eigen vectors, t-SNE is based on probabilistic models and outputs distinguishable clusters as it is trained more.
 - While PCA uses orthogonal transformations, t-SNE relies on calculating nearest neighbours.
+
+## Demo Results: pca_demo.txt:
+
+#### <u>PCA</u>:
+
+<img src="./Code/results/pca_pca_demo.png" width="50%" height="50%" />
+
+#### <u>SVD</u>:
+
+<img src="./Code/results/svd_pca_demo.png" width="50%" height="50%" />
+
+<br>
+<br>
+
+#### <u>t-SNE</u>:
+
+<img src="./Code/results/tsne_pca_demo.png" width="50%" height="50%" />
