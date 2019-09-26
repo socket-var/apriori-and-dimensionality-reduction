@@ -312,8 +312,6 @@ while(True):
 
 print("Length of frequent Itemsets")
 print(len(Frequent))
-#print("Length of support dictionary")
-#print(len(Frequency))
 
 ### Part 2 ###
 
@@ -334,24 +332,6 @@ if minConf>0 and rule!='None':
 			(newleft,newright) = generateOtherLevels(Frequent[i],newleft,newright,j+2)
 			Gleft.extend(newleft)
 			Gright.extend(newright)
-		
-	#print("Length of total rules generated: "+str(len(Gleft)))
-
-	# checkleft = set()
-	# s = ''
-	# for i in range(0,len(Gleft)):
-	# 	for j in Gleft[i]:
-	# 		#checkleft.add(temp)
-	# 		s+=str(j)
-	# 	checkleft.add(s)
-	# 	s = ''
-
-	# print("Length of unique left: "+str(len(checkleft)))
-
-	# for i in range(0,len(Gleft)):
-	# 	print(Gleft[i],Gright[i])
-	# print(len(Gleft))
-	# print(len(Gright))
 
 	if(rule[0:19]=='asso_rule.template1'):
 		output = generateRulesForOne(Gleft,Gright,rule[19:])
@@ -359,25 +339,9 @@ if minConf>0 and rule!='None':
 		output = generateRulesForTwo(Gleft,Gright,rule[19:])
 	elif(rule[0:19]=='asso_rule.template3'):
 		output = generateRulesForThree(Gleft,Gright,rule[19:])
-
-	#print(output)
 	print("length of rules generated for given template: "+str(len(output)))
-	# print("Count",temp_count)
-	# frequentItem = ['G8_Up', 'G24_Down', 'G54_Up', 'G80_Down', 'G81_Up', 'Breast Cancer']
-	# left = []
-	# right = []
-	# (newleft,newright) = generateLevelOneRules(frequentItem,left,right)
-	# print(newleft)
-	# print(newright)
-	# for j in range(0,len(frequentItem)-2):
-	# 	if(j+2 == 5):
-	# 		break
-	# 	(newleft,newright) = generateOtherLevels(frequentItem,newleft,newright,j+2)
-	# 	print("Level "+ str(j+2))
-	# 	print(newleft)
-	# 	print(newright)
-	# 	print(len(newleft))
-	# 	print(len(newright))
+	#print(output)
+
 
 
 
